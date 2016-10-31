@@ -2,140 +2,169 @@
 
 %%%%%%%%%%%%% Geometry
 \usepackage[a4paper,left=2.5cm,right=2.5cm, bottom=2.5cm,top=2.5cm]{geometry}
-% 
-% \usepackage[papersize={158mm,244mm},top=10mm,left=0mm,%
-%     right=0mm,bottom=22mm]{geometry}
-
-%%%%%%%%%% Booklet
-% \documentclass[14pt]{extbook}
-% \usepackage[a4paper,left=1cm,right=1cm, bottom=2.5cm,top=2.5cm]{geometry}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newif\ifteacher
-\newif\ifediting
-%%%%%%%%% Comment package: teacher version or student version
-% \teachertrue
-% \editingtrue
-
-\usepackage{comment}
-\ifediting
-    \includecomment{teacher}
-    \includecomment{student}
-\else
-    \ifteacher
-        \includecomment{teacher}
-        \excludecomment{student}
-    \else
-        \excludecomment{teacher}
-        \includecomment{student}
-    \fi
-\fi
-
-
 
 %%%%%%%%%%%%%%% Les paquets
 
 \usepackage[english]{babel}
-\usepackage{fontspec}
-\usepackage{xltxtra}
-
-\usepackage{afterpage}
-\usepackage{wrapfig}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{graphicx}
-\usepackage{fancyhdr}
-\usepackage{enumerate}
-\usepackage{stmaryrd}
-\usepackage{dsfont}
-\usepackage{amsthm}
-\usepackage{slashbox}
-\usepackage{hhline}
-
-\usepackage[table]{xcolor}
-\usepackage{ifthen}
-\usepackage{everypage}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{graphicx}
-\usepackage{multicol}
-\usepackage{mathrsfs}
-
-\usepackage{montikz}
-\usepackage{xeboiboites}
-\usepackage[palette=e]{nexus}
-\pagestyle{nexus}
-
-
-
-
-
-
-
-%Fonts
-\setmainfont[SmallCapsFont = KerkisSmallCaps]{Kerkis}
-\newfontfamily\fonthand{Ursula-Handschrift}
-\newfontfamily\fonthandgraph{Journal}
-\DeclareTextFontCommand{\emph}{\bfseries\itshape}
-
-%%%%%%%%%%%%% Définition des théorèmes et autres
-
-\usepackage{thmtools}
-\theoremstyle{definition}
-\declaretheoremstyle[headfont=\large\fonthand,
-                    spaceabove=8pt,
-                    spacebelow=8pt]{definition}
-
-\newtheorem{definition}{Definition}[chapter]
-
-
-\newboxedtheorem[thcounter=chapter,boxcolor=black,
-    background=blue!10, titlebackground=blue!30,
-    titleboxcolor = black]{theorem}{Theorem}{definition}
-
-\makeatletter
-\newcommand{\alert}[1]{{\sl\textcolor{orange}{#1}}}
-\newcounter{numExo}%[chapter]
-\newenvironment{exercise}[1][]{\refstepcounter{numExo}%
-    \noindent
-    \raisebox{-0.55em}{\begin{tikzpicture}[x=1.0cm,y=1.0cm]%
-        \draw[color=black,fill=blue!30, thick,new free hand]%
-            (0,0) rectangle (0.62, 0.55); 
-        \node at (0.3,0.25)%
-            {\large\fonthand\textcolor{black}{\arabic{numExo}}};
-        \end{tikzpicture}}%
-        ~\@ifnotempty{#1}{\textcolor{orange}{\sl #1}\vspace{0.1em}}}{}%
-{\vspace{0.5em}%
-}
-\makeatother
-
-
-\renewcommand{\thedefinition}{\arabic{chapter}.\arabic{definition}}
-
+\usepackage[palette=munch]{nexus}
 
 %%%%%%%%%%%%%%%% hyperref
-\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage[verbose]{hyperref}
 \hypersetup{ 
     hidelinks
 }
 \setlength{\XeTeXLinkMargin}{-1pt}
 
-\usepackage{lipsum}
 
-
-% \includeonly{firstchap}
 \begin{document}
 
 \tableofcontents
 
-\include{firstchapter}
-\include{anotherchapter}
-\include{anotherchapter}
-\include{anotherchapter}
-\include{anotherchapter}
+% \include{firstchapter}
 
+\chapter{This is a Chapter}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+
+\newpage
+
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\chapter{This is a Chapter}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\chapter{This is a Chapter}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{This is a Chapter}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+% 
+% \include{anotherchapter}
+% \include{anotherchapter}
+% \include{anotherchapter}
+% \include{anotherchapter}
+% \include{anotherchapter}
+
+
+
+% 
+\begin{appendices}
+\chapter{This is an appendix}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\lipsum[1-10]
+
+
+
+\chapter{This is an appendix}
+
+\section{This is a section}
+
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+\subsection{This is a subsection}
+
+\lipsum[1-10]
+
+
+\end{appendices}
 
 \end{document}
 

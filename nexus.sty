@@ -1,48 +1,126 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{nexus}[2015/06/05 version 0.5]
-\usepackage[absolute]{textpos}
+\ProvidesPackage{nexus}[2016/10/30 version 1.1]
 
-\RequirePackage{titletoc}
-\RequirePackage{titlesec}
-\RequirePackage{appendix}
+\RequirePackage{amsmath}
+\RequirePackage[absolute]{textpos}
+\RequirePackage{tikz}
+\RequirePackage{fancyhdr}
 \RequirePackage{xkeyval}
 \RequirePackage{alphalph}
-\RequirePackage{totcount}
+\RequirePackage{ifthen}
+\RequirePackage{appendix}
+\RequirePackage{titletoc}
+\RequirePackage{etoolbox}
+\AtBeginEnvironment{appendices}{%
+  \addtocontents{toc}{\protect\gdef\protect\@chapapp{\protect\appendixname}}%\appendixname
+}
 \RequirePackage{assoccnt}
+\RequirePackage{totcount}
 \newtotcounter{totalchapters}
 \regtotcounter{chapter}
 \DeclareAssociatedCounters{chapter}{totalchapters} % Associate the driven counter `totalchapters` to the master counter `chapter`
 
+
 %Width of the rectangles in the footer
 \newlength{\reclength}
-\setlength{\reclength}{.086\paperwidth}
+
 
 %Chosing the colormap
 \DeclareOptionX{palette}{%
   \def\my@palette{\csname palette@#1\endcsname}}
-\ExecuteOptionsX{palette=e}
+\DeclareOptionX{reclength}{%
+  \setlength{\reclength}{#1}}
+\ExecuteOptionsX{reclength=.086\paperwidth}
+\ExecuteOptionsX{palette=ebis}
 \ProcessOptionsX
 
 \setlength{\TPHorizModule}{\paperwidth}
 \setlength{\TPVertModule}{\paperheight}
 
 
-\pagestyle{fancy}
-\renewcommand{\headrulewidth}{0pt}
-\setlength{\headheight}{15pt}
-\setlength{\footskip}{50pt}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Some colormaps %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Une palette
 \newcommand{\palette@a}{
-    \definecolor{chapa}{RGB}{255, 153, 0}
+    \definecolor{chapa}{RGB}{255,153,0}
     \definecolor{chapb}{RGB}{66,66,66}
     \definecolor{chapc}{RGB}{233,233,233}
     \definecolor{chapd}{RGB}{188,188,188}
     \definecolor{chape}{RGB}{50,153,187}
 }
 
+% Munch
+\newcommand{\palette@munch}{
+    \definecolor{chapa}{HTML}{4D7186}
+    \definecolor{chapb}{HTML}{284253}
+    \definecolor{chapc}{HTML}{E0542E}
+    \definecolor{chapd}{HTML}{F4A720}
+    \definecolor{chape}{HTML}{EF8C12}
+    \definecolor{chapf}{HTML}{4D7186}
+    \definecolor{chapg}{HTML}{284253}
+    \definecolor{chaph}{HTML}{E0542E}
+    \definecolor{chapi}{HTML}{F4A720}
+    \definecolor{chapj}{HTML}{EF8C12}
+}
+
+% Night Hill : http://www.colorschemer.com/schemes/viewscheme.php?id=8447#comments
+\newcommand{\palette@nighthill}{
+    \definecolor{chapa}{HTML}{4D6004}
+    \definecolor{chapb}{HTML}{41776A}
+    \definecolor{chapc}{HTML}{4B8F92}
+    \definecolor{chapd}{HTML}{3E3701}
+    \definecolor{chape}{HTML}{074A5B}
+    \definecolor{chapf}{HTML}{08525B}
+    \definecolor{chapg}{HTML}{353D04}
+    \definecolor{chaph}{HTML}{262000}
+    \definecolor{chapi}{HTML}{2D717C}
+    \definecolor{chapj}{HTML}{265336}
+    \definecolor{chaph}{HTML}{67A3A1}
+}
+
+% Van Gogh's starry night
+\newcommand{\palette@starrynight}{
+    \definecolor{chapa}{HTML}{263C8B}
+    \definecolor{chapb}{HTML}{4E74A6}
+    \definecolor{chapc}{HTML}{BDBF78}
+    \definecolor{chapd}{HTML}{BFA524}
+    \definecolor{chape}{HTML}{2E231F}
+    \definecolor{chapf}{HTML}{263C8B}
+    \definecolor{chapg}{HTML}{4E74A6}
+    \definecolor{chaph}{HTML}{BDBF78}
+    \definecolor{chapi}{HTML}{BFA524}
+    \definecolor{chapj}{HTML}{2E231F}
+}
+
+% One pastels : http://www.colorschemer.com/schemes/viewscheme.php?id=10746
+\newcommand{\palette@onepastels}{
+    \definecolor{chapa}{HTML}{FF6666}
+    \definecolor{chapb}{HTML}{FF9966}
+    \definecolor{chapc}{HTML}{FFCC33}
+    \definecolor{chapd}{HTML}{FFFF99}
+    \definecolor{chape}{HTML}{CCFF99}
+    \definecolor{chapf}{HTML}{99CC66}
+    \definecolor{chapg}{HTML}{99CCCC}
+    \definecolor{chaph}{HTML}{0099FF}
+    \definecolor{chapi}{HTML}{CC99FF}
+    \definecolor{chapj}{HTML}{990099}
+}
+
+% http://www.colorschemer.com/schemes/viewscheme.php?id=10616
+\newcommand{\palette@CIbase}{
+    \definecolor{chapa}{HTML}{073A70}
+    \definecolor{chapb}{HTML}{0080C9}
+    \definecolor{chapc}{HTML}{88BCE2}
+    \definecolor{chapd}{HTML}{004020}
+    \definecolor{chape}{HTML}{009E2D}
+    \definecolor{chapf}{HTML}{C8E1C2}
+    \definecolor{chapg}{HTML}{D9AF0B}
+    \definecolor{chaph}{HTML}{FECC00}
+    \definecolor{chapi}{HTML}{FDE890}
+    \definecolor{chapj}{HTML}{000000}
+    \definecolor{chapk}{HTML}{444444}
+    \definecolor{chapl}{HTML}{FFFFFF}
+}
 %Une autre (yellow tree frog)
 \newcommand{\palette@b}{
     \definecolor{chapa}{RGB}{231, 63, 63}
@@ -55,10 +133,10 @@
 %Encore une
 \newcommand{\palette@c}{
     \definecolor{chapa}{RGB}{41,0,0}
-    \definecolor{chapb}{RGB}{255, 0, 0}
-    \definecolor{chapc}{RGB}{255, 89, 0}
-    \definecolor{chapd}{RGB}{255, 147, 0}
-    \definecolor{chape}{RGB}{125, 0, 0}
+    \definecolor{chapb}{RGB}{255,0,0}
+    \definecolor{chapc}{RGB}{255,89,0}
+    \definecolor{chapd}{RGB}{255,147,0}
+    \definecolor{chape}{RGB}{125,0,0}
 }
 
 %Un autre thème
@@ -110,7 +188,7 @@
     \definecolor{chapi}{HTML}{15CA7F}
     \definecolor{chapj}{HTML}{152ACA}
     \definecolor{chapk}{HTML}{CA16BD}
-    \definecolor{chapl}{HTML}{CA16BD}
+    \definecolor{chapl}{HTML}{6CACE2}
 }
 
 % Nemo
@@ -122,7 +200,38 @@
     \definecolor{chape}{HTML}{32303A}
 }
 
+% Blank colormap to avoid errors when colormaps are to small to handle a big number of chapters.
+% chapa is left undefined in order to allow fast compilation when no colormap is selected.
+\newcommand{\palette@blank}{
+    \definecolor{chapb}{RGB}{255,255,255}
+    \definecolor{chapc}{RGB}{255,255,255}
+    \definecolor{chapd}{RGB}{255,255,255}
+    \definecolor{chape}{RGB}{255,255,255}
+    \definecolor{chapf}{RGB}{255,255,255}
+    \definecolor{chapg}{RGB}{255,255,255}
+    \definecolor{chaph}{RGB}{255,255,255}
+    \definecolor{chapi}{RGB}{255,255,255}
+    \definecolor{chapj}{RGB}{255,255,255}
+    \definecolor{chapk}{RGB}{255,255,255}
+    \definecolor{chapl}{RGB}{255,255,255}
+    \definecolor{chapm}{RGB}{255,255,255}
+    \definecolor{chapn}{RGB}{255,255,255}
+    \definecolor{chapo}{RGB}{255,255,255}
+    \definecolor{chapp}{RGB}{255,255,255}
+    \definecolor{chapq}{RGB}{255,255,255}
+    \definecolor{chapr}{RGB}{255,255,255}
+    \definecolor{chaps}{RGB}{255,255,255}
+    \definecolor{chapt}{RGB}{255,255,255}
+    \definecolor{chapu}{RGB}{255,255,255}
+    \definecolor{chapv}{RGB}{255,255,255}
+    \definecolor{chapw}{RGB}{255,255,255}
+    \definecolor{chapx}{RGB}{255,255,255}
+    \definecolor{chapy}{RGB}{255,255,255}
+    \definecolor{chapz}{RGB}{255,255,255}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\palette@blank
 
 %Chosing the colormap
 \my@palette
@@ -150,6 +259,15 @@
     \ifthenelse{#1=14}{\gdef\ch@p{chapo}}{}%
     \ifthenelse{#1=15}{\gdef\ch@p{chapp}}{}%
     \ifthenelse{#1=16}{\gdef\ch@p{chapq}}{}%
+    \ifthenelse{#1=17}{\gdef\ch@p{chapr}}{}%
+    \ifthenelse{#1=18}{\gdef\ch@p{chaps}}{}%
+    \ifthenelse{#1=19}{\gdef\ch@p{chapt}}{}%
+    \ifthenelse{#1=20}{\gdef\ch@p{chapu}}{}%
+    \ifthenelse{#1=21}{\gdef\ch@p{chapv}}{}%
+    \ifthenelse{#1=22}{\gdef\ch@p{chapw}}{}%
+    \ifthenelse{#1=23}{\gdef\ch@p{chapx}}{}%
+    \ifthenelse{#1=24}{\gdef\ch@p{chapy}}{}%
+    \ifthenelse{#1=25}{\gdef\ch@p{chapz}}{}%
 }
 
 %%%%%    Style of the decorations     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,12 +288,53 @@
 
                            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PAGE STYLE
-\fancypagestyle{plain}{\fancyhf{}}
-\renewcommand\chaptermark[1]{\markboth{\textcolor{white}{#1}}{}}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{15pt}
+\setlength{\footskip}{50pt}
 
-\fancypagestyle{nexus}{
-%
-\fancyfoot{
+%%%%%%% Macro to draw the footer/header
+
+\newcommand{\draw@emptyfooter}{%
+    \begin{textblock}{1}(0,0.927)
+        \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
+            \clip(0,0) rectangle (\TPHorizModule,.119\TPHorizModule);
+            \draw[black] (0,0) rectangle (\TPHorizModule,.0714\TPHorizModule); %Large rectangle spanning over the page width
+        \end{tikzpicture}
+    \end{textblock}
+    }
+
+\newcommand{\draw@emptyheader}[1]{%
+    \begin{textblock}{1}(0,0)      
+        \begin{tikzpicture}[x=1cm,y=1cm]
+            \draw[black] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
+            \node[black, right] at  (.2\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
+        \end{tikzpicture}
+    \end{textblock}
+    }
+
+\newcommand{\draw@chapteremptyheader}[1]{%
+    \begin{textblock}{1}(0,0)
+      \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
+        \clip(0,0) rectangle (\TPHorizModule,.105\TPHorizModule);
+        \draw[black] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
+        \draw[black] (.854\TPHorizModule,0.1) rectangle (.998\TPHorizModule,.126\TPHorizModule);
+        \node[scale=5]  at (.926\TPHorizModule,.055\TPHorizModule) {\thechapter};
+        \node[black] at (.2\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
+      \end{tikzpicture}
+    \end{textblock}
+    }    
+
+\newcommand{\draw@chaptersemptyheader}[1]{%
+    \begin{textblock}{1}(0,0)
+      \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
+        \clip(0,0) rectangle (\TPHorizModule,.105\TPHorizModule);
+        \draw[black] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
+        \node[black] at (.2\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
+      \end{tikzpicture}
+    \end{textblock}
+    }      
+    
+\newcommand{\draw@footer}{%
     \begin{textblock}{1}(0,0.927)
         \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
             \ch@ngecolors{\thetotalchapters} %Select the color corresponding to the current chapter
@@ -186,7 +345,13 @@
                 % Draw the rectangles in the footer : if \x is current chapter, draw a big rectangle, otherwise draw a small one
                 \ifthenelse{\equal{\thetotalchapters}{\x}}{%
                      \draw[small rectangle] (\y\reclength,-.03\TPHorizModule) rectangle (\x\reclength,.1\TPHorizModule);
-                     \node[scale=2] at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\thechapter}}; %Write chapter number in the rectangle
+                     %Check whether current chapter is an appendinx or not and write accordingly a letter or a number in the big rectangle
+                     \ifthenelse{\(\x>\totvalue{chapter}\)\and\(\totvalue{totalchapters}>\totvalue{chapter}\)}{%
+                                    \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\AlphAlph{\numexpr\x-\totvalue{chapter}}}};
+                               }%
+                               {%
+                                    \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\x}};
+                               }%
                      \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
                 }{%
                   \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
@@ -208,8 +373,8 @@
         \end{tikzpicture}
     \end{textblock}
     }
-%
-\fancyhead{
+
+\newcommand{\draw@header}[1]{%
     \begin{textblock}{1}(0,0)      
         \begin{tikzpicture}[x=1cm,y=1cm]
             \ch@ngecolors{\thetotalchapters}
@@ -218,62 +383,21 @@
         \end{tikzpicture}
     \end{textblock}
     }
-}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTER HEAD
-\def\@makechapterhead#1{%
-  \hypertarget{chapter \thetotalchapters}{}
-    \parindent 0pt
-    % Header
+    
+\newcommand{\draw@chapterheader}[1]{%
     \begin{textblock}{1}(0,0)
       \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
         \clip(0,0) rectangle (\TPHorizModule,.105\TPHorizModule);
         \ch@ngecolors{\thetotalchapters}
-        \draw[header style] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.119\TPHorizModule);
+        \draw[header style] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
         \draw[big rectangle] (.854\TPHorizModule,0.1) rectangle (.998\TPHorizModule,.126\TPHorizModule);
         \node[scale=5]  at (.926\TPHorizModule,.055\TPHorizModule) {\textcolor{\ch@p}{\thechapter}};
         \node[title color,right] at (.05\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
       \end{tikzpicture}
     \end{textblock}
-    %Footer
-    \begin{textblock}{1}(0,.927)
-      \begin{tikzpicture}[>=triangle 45,x=1.0cm,y=1.0cm]%
-        \clip(0,0) rectangle (\TPHorizModule,.119\TPHorizModule);
-        \ch@ngecolors{\thetotalchapters}
-        \draw[footer style] (0,0) rectangle (\TPHorizModule,.0714\TPHorizModule);
-            \foreach[evaluate=\y using \x-1,evaluate=\z using \x-.5] \x in {1,...,\totvalue{totalchapters}} {
-                \ch@ngecolors{\x}
-                \ifthenelse{\thetotalchapters=\x}{
-                    \draw[small rectangle] (\y\reclength,-.03\TPHorizModule) rectangle (\x\reclength,.1\TPHorizModule);
-                    \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\thechapter}};
-                    \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}};
-                }{
-                  \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
-                  \ifthenelse{\(\x>\totvalue{chapter}\)\and\(\totvalue{totalchapters}>\totvalue{chapter}\)}{%
-                                    \node[scale=2]  at (\z\reclength,.04\TPHorizModule)
-                                    {\textcolor{white}{\AlphAlph{\numexpr\x-\totvalue{chapter}}}};
-                               }%
-                               {%
-                               \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\x}};
-                               }%
-                    \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}};
-                }
-            }
-          %Page numbering
-          \clip(0,0) rectangle (\TPHorizModule,.119\TPHorizModule); 
-          \ch@ngecolors{\thetotalchapters}
-          \draw[rectangle for page numbering] (.93\TPHorizModule,.0714\TPHorizModule) rectangle (\TPHorizModule,.1\TPHorizModule);%header style
-          \node at (.965\TPHorizModule,.0857\TPHorizModule) {\thepage};
-      \end{tikzpicture}
-    \end{textblock}
-}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTER HEAD - STARRED VERSION (TOC)
-\def\@makeschapterhead#1{%
-    \parindent 0pt
-    % Header
+    }
+    
+\newcommand{\draw@chaptersheader}[1]{%
     \begin{textblock}{1}(0,0)
     \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
         \clip(0,0) rectangle (\TPHorizModule,.105\TPHorizModule);
@@ -282,45 +406,144 @@
         \node[title color,right] at (.05\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
     \end{tikzpicture}
     \end{textblock}
-    % Footer
-    \begin{textblock}{1}(0,.927)
-    \begin{tikzpicture}[>=triangle 45,x=1.0cm,y=1.0cm]%
-        \clip(0,0) rectangle (\TPHorizModule,.119\TPHorizModule);
-        \ch@ngecolors{0}
-        \draw[footer style] (0,0) rectangle (\TPHorizModule,.0714\TPHorizModule);
+    }
+
+\newcommand{\draw@chaptersfooter}{%
+        \begin{textblock}{1}(0,0.927)
+        \begin{tikzpicture}[x=1.0cm,y=1.0cm]%
+            \ch@ngecolors{\thetotalchapters} %Select the color corresponding to the current chapter
+            \clip(0,0) rectangle (\TPHorizModule,.119\TPHorizModule);
+            \draw[footer style] (0,0) rectangle (\TPHorizModule,.0714\TPHorizModule); %Large rectangle spanning over the page width
             \foreach[evaluate=\y using \x-1,evaluate=\z using \x-.5] \x in {1,...,\totvalue{totalchapters}} {
                 \ch@ngecolors{\x}
-                \ifthenelse{\equal{\thetotalchapters}{\x}}{
+                % Draw the rectangles in the footer : if \x is current chapter, draw a big rectangle, otherwise draw a small one
+                \ifthenelse{\equal{\thetotalchapters}{\x}}{%
                      \draw[small rectangle] (\y\reclength,-.03\TPHorizModule) rectangle (\x\reclength,.1\TPHorizModule);
-                     \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\x}};
-                     \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}};
-                }{
-                     \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
+                     %Check whether current chapter is an appendinx or not and write accordingly a letter or a number in the big rectangle
                      \ifthenelse{\(\x>\totvalue{chapter}\)\and\(\totvalue{totalchapters}>\totvalue{chapter}\)}{%
-                          \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\AlphAlph{\numexpr\x-\totvalue{chapter}}}};
-                     }{%
-                          \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\x}}; 
-                     }%
-                    \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}};
+                                    \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\AlphAlph{\numexpr\x-\totvalue{chapter}}}};
+                               }%
+                               {%
+                                    \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\x}};
+                               }%
+%                 \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink                     
+                     \node[scale=2] at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\thechapter}}; %Write chapter number in the rectangle
+                     \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
+                }{%
+                  \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
+                  %When drawing a small rectangle, check whether it is an appendix or not and write the corresponding counter in the rectangle.
+                  \ifthenelse{\(\x>\totvalue{chapter}\)\and\(\totvalue{totalchapters}>\totvalue{chapter}\)}{%
+                                    \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\AlphAlph{\numexpr\x-\totvalue{chapter}}}};
+                               }%
+                               {%
+                                    \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\x}};
+                               }%
+                \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink
                 }
             }
-    \end{tikzpicture}
+        \end{tikzpicture}
     \end{textblock}
+    }
+
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Nexus page style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\fancypagestyle{plain}{\fancyhf{}}
+% \renewcommand\chaptermark[1]{bla\markboth{\textcolor{white}{#1}}{}}
+\@ifundefinedcolor{chapa}{%
+    \fancypagestyle{nexus}{%
+        \fancyfoot{\draw@emptyfooter}%
+        \fancyhead{\draw@emptyheader}{\leftmark}%
+    }%
+}%
+{%
+    \fancypagestyle{nexus}{%
+        \fancyfoot{\draw@footer}%
+        \fancyhead{\draw@header}%
+    }%
+}%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTER HEAD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\@ifundefinedcolor{chapa}{%
+    \def\@makechapterhead#1{%
+        \parindent 0pt%
+        \draw@chapteremptyheader{#1}%
+        \draw@emptyfooter%
+    }%
+}%
+{%
+    \def\@makechapterhead#1{%
+        \hypertarget{chapter \thetotalchapters}{}%
+        \parindent 0pt%
+        \draw@chapterheader{#1}%
+        \draw@footer%
+    }%
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTER HEAD - STARRED VERSION (TOC) %%%%%%%%%%%%%%%%%%%%%%%
+\@ifundefinedcolor{chapa}{%
+    \def\@makeschapterhead#1{%
+        \parindent 0pt%
+        \draw@chaptersemptyheader{#1}%
+        \draw@emptyfooter%
+        }%
+}%
+{%
+    \def\@makeschapterhead#1{%
+        \parindent 0pt%
+        \draw@chaptersheader{#1}%
+        \draw@chaptersfooter%
+        }%
+}
+
+\pagestyle{nexus}
 
 %%%%%%%%%%%%%%%%% TOC
-% Counter to build the TOC with the appropriate colors. Useless after TOC creation.
-\newcounter{charpitre}
 
-\usepackage{etoolbox}
-\AtBeginEnvironment{appendices}{%
-  \addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\protect\appendixname}}%\appendixname
-}
+
+
+\renewcommand\chaptermark[1]{\markboth{\textcolor{white}{#1}}{}}
 
 \renewcommand{\@pnumwidth}{3em}% To avoid a badbox for documents with more than 100 pages
-\contentsmargin{-1.5cm}
+\contentsmargin{-1.5cm}%
 
+
+\@ifundefinedcolor{chapa}{% if colormap doesn't exist : fast compilation enabled
+% Chapter style in the TOC
+\titlecontents{chapter}[4pc]
+{\addvspace{30pt}%
+\begin{tikzpicture}[remember picture, overlay]%
+    \draw[black] (-4.2,-.1) rectangle (-.8,.5);%
+    \pgftext[left,x=-3.5cm,y=0.2cm]{\color{black}\large\bfseries\sc\ \thecontentslabel};%
+\end{tikzpicture}%
+}%
+{}
+{}
+{\;\titlerule\;\large\bfseries Page 
+\thecontentspage
+\begin{tikzpicture}[remember picture, overlay]
+    \draw[black] (2pt,0) rectangle (6,0.1pt);
+\end{tikzpicture}%
+}%
+[\addvspace{.2cm}]%
+% Section style in the TOC
+\titlecontents{section}[0pc]
+{\addvspace{5pt}}
+{
+\contentslabel[\thecontentslabel]{2pc}\color{black}}
+{}
+{\hfill\small\thecontentspage\color{black}}
+[\addvspace{3pt}]
+% Subsection style in the TOC
+\titlecontents*{subsection}[1pc]
+{\addvspace{-1pt}\small\contentsmargin{-1cm}\normalfont\sffamily\footnotesize}
+{}
+{}
+{}
+[~{–}\ ][]
+}{% If colormap exists (fast compilation disabled)
+% Counter to build the TOC with the appropriate colors. Useless after TOC creation.
+\newcounter{charpitre}%
 % Chapter style in the TOC
 \titlecontents{chapter}[4pc]
 {\addvspace{30pt}%
@@ -328,6 +551,8 @@
 \ch@ngecolors{\thecharpitre}%
 \begin{tikzpicture}[remember picture, overlay]%
     \draw[toc rectangle] (-4.2,-.1) rectangle (-.8,.5);%
+    \node at (-2.5,0.2) {\hyperlink{chapter \thecharpitre}{\XeTeXLinkBox{\phantom{\rule{3.4cm}{.6cm}}}}}; %Hidden hyperlink    
+%     \hyperlink{chapter \thecharpitre}{\tikz\draw[toc rectangle] (-4.2,-.1) rectangle (-.8,.5);}
     \pgftext[left,x=-3.5cm,y=0.2cm]{\color{white}\large\bfseries\sc\@chapapp\ %
     \thecontentslabel};%
 \end{tikzpicture}%
@@ -342,14 +567,17 @@
 }%
 [\addvspace{.2cm}]%
 
+
 % Section style in the TOC
 \titlecontents{section}[0pc]
 {\addvspace{5pt}}
-{
+{%
+\ch@ngecolors{\thecharpitre}%
 \color{\ch@p!80!black}\contentslabel[\thecontentslabel]{2pc}\color{black}}
 {}
 {\hfill\small\color{\ch@p!80!black}\thecontentspage\color{black}}
 [\addvspace{3pt}]
+
 
 % Subsection style in the TOC
 \titlecontents*{subsection}[1pc]
@@ -358,9 +586,13 @@
 {}
 {}
 [~{–}\ ][]
-
+}
 % Correct spacing between page header and TOC
 \renewcommand{\tableofcontents}{%
 \chapter*{\contentsname}%
+\markboth{\contentsname}{}
+% \def\@leftmark{\contentsname}%
 \vspace{-30pt}%
 \@starttoc{toc}}
+
+% \hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}
