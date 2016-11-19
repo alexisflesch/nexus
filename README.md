@@ -17,3 +17,5 @@ The file "example.pdf" is, well, an example of what you can expect using this st
 The boxes were made with xeboiboites.sty which can be found here:
 
 http://alexisfles.ch/en/latex/boites2.html
+
+https://github.com/alexisflesch/xeboiboites
