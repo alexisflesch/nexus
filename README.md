@@ -22,7 +22,7 @@ https://github.com/alexisflesch/xeboiboites
 Below are two screenshots to give you an idea of what this package does:
 
 
-![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c1.png)
+![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c1.jpg)
 
 
-![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c2.png)
+![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c2.jpg)
