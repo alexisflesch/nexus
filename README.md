@@ -26,3 +26,7 @@ Below are two screenshots to give you an idea of what this package does:
 
 
 ![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c2.jpg)
+
+
+# Licence
+LaTeX Project Public License 1.3c
