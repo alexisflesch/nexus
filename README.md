@@ -1,32 +1,58 @@
-# nexus.sty
-This is a style file for LaTeX.
+# nexus
 
-Hyperref is currently pointing to the wrong pages in the TOC for some reason: 
-feel free to contact me if you figure it out!
+`nexus.sty` adds chapter colors, a chapter navigation strip, headings and a table of contents to a LaTeX book. The original colorful style remains available. `nexus-aquarelle.sty` is an optional watercolor variant with painted chapter headers and footers, pencil-like outlines and quiet backgrounds for important boxes.
 
-You can load the package with two optional arguments:
-- the colormap via "palette=whatever" (open nexus.sty to see a list of available colormaps)
-- the length of the rectangles in the footer via "reclength=whatever"
+![Watercolor chapter preview](caps/aquarelle.png)
 
-Example:
+The preview is an image from a mathematics course. The course sources are not included in this repository.
 
+## Usage
+
+Compile with **XeLaTeX** (the navigation links use `\XeTeXLinkBox`; the watercolor variant also uses `fontspec`). Load the packages in this order:
+
+```latex
+\documentclass{book}
+\usepackage{hyperref}
 \usepackage[palette=ebis,reclength=.08\paperwidth]{nexus}
+\usepackage{nexus-aquarelle} % optional
+\begin{document}
+\tableofcontents
+\chapter{First chapter}
+\section{A section}
+Some text.
+\end{document}
+```
 
-The file "example.pdf" is, well, an example of what you can expect using this style file.
-The boxes were made with xeboiboites.sty which can be found here:
+`nexus` accepts `palette=<name>` and `reclength=<length>`. The default palette is `ebis`; the other palettes are defined in `nexus.sty`. Without `nexus-aquarelle`, the classic design is used. The watercolor variant follows the active chapter color in the header and footer and keeps the chapter links clickable. It uses pre-rendered PNG washes for the large painted areas, so the brush textures do not have to be redrawn by TikZ on each page.
 
-http://alexisfles.ch/en/latex/boites2.html
+The watercolor variant colors section headings by default. For dark, neutral headings, use:
 
-https://github.com/alexisflesch/xeboiboites
+```latex
+\usepackage[sectionsneutres]{nexus-aquarelle}
+```
 
-Below are two screenshots to give you an idea of what this package does:
+`sectionscolorees` explicitly restores the default. The variant also restyles the course environments named `definition`, `definitions`, `illustration`, `exercice`, `definitionb`, `proposition`, `theoreme`, `corollairei`, `proprietei` and `proprietesi` **when they exist**. Define them before loading `nexus-aquarelle`. The theorem boxes in the preview are declared with [xeboiboites](https://github.com/alexisflesch/xeboiboites) 1.2. Examples and exercises remain unpainted; the blue wash is reserved for definitions and theorem boxes.
 
+## Installation
 
-![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c1.jpg)
+Keep `nexus-aquarelle.sty` and the complete `aquarelle/` directory together. For a local TeX installation:
 
+```sh
+texmf="$(kpsewhich -var-value TEXMFHOME)/tex/latex/nexus"
+mkdir -p "$texmf"
+cp nexus.sty nexus-aquarelle.sty "$texmf/"
+cp -R aquarelle "$texmf/"
+```
 
-![alt tag](https://github.com/alexisflesch/nexus/blob/master/caps/c2.jpg)
+Alternatively, put this repository on TeX's search path with `TEXINPUTS=/path/to/nexus//:`. Compile twice for the chapter counters and links. `nexus-aquarelle` requires a reasonably recent `tcolorbox`, `tikz`, `fontspec`, `etoolbox`, `xparse`, `graphicx`, `xcolor` and `needspace` installation. EB Garamond is used when it is installed at the expected system path; otherwise the theme uses TeX Gyre Pagella.
 
+## Classic preview
 
-# Licence
-LaTeX Project Public License 1.3c
+![Original chapter preview 1](caps/c1.jpg)
+![Original chapter preview 2](caps/c2.jpg)
+
+The original [example PDF](example.pdf) shows the classic style. Its boxes use [xeboiboites](https://github.com/alexisflesch/xeboiboites).
+
+## License
+
+LaTeX Project Public License 1.3c.

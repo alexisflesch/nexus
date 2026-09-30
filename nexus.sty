@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{nexus}[2016/10/30 version 1.1]
+\ProvidesPackage{nexus}[2026/09/30 version 1.2]
 
 \RequirePackage{amsmath}
 \RequirePackage[absolute]{textpos}
@@ -352,7 +352,7 @@
                                {%
                                     \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\x}};
                                }%
-                     \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
+                     \node at (\z\reclength,.05\TPHorizModule) {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
                 }{%
                   \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
                   %When drawing a small rectangle, check whether it is an appendix or not and write the corresponding counter in the rectangle.
@@ -362,7 +362,7 @@
                                {%
                                     \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\x}};
                                }%
-                \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink
+                \node at (\z\reclength,.036\TPHorizModule) {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink
                 }
             }
           %Page number at the bottom right of the page
@@ -379,7 +379,7 @@
         \begin{tikzpicture}[x=1cm,y=1cm]
             \ch@ngecolors{\thetotalchapters}
             \draw[header style] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
-            \node[title color,right] at  (.05\TPHorizModule,.07\TPHorizModule) {\LARGE \bf \leftmark};
+            \node[title color,right] at  (.05\TPHorizModule,.065\TPHorizModule) {\LARGE \bf \leftmark};
         \end{tikzpicture}
     \end{textblock}
     }
@@ -391,8 +391,8 @@
         \ch@ngecolors{\thetotalchapters}
         \draw[header style] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
         \draw[big rectangle] (.854\TPHorizModule,0.1) rectangle (.998\TPHorizModule,.126\TPHorizModule);
-        \node[scale=5]  at (.926\TPHorizModule,.055\TPHorizModule) {\textcolor{\ch@p}{\thechapter}};
-        \node[title color,right] at (.05\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
+        \node[scale=5]  at (.926\TPHorizModule,.055\TPHorizModule) {\bf\textcolor{\ch@p}{\thechapter}};
+        \node[title color,right] at (.05\TPHorizModule,.065\TPHorizModule) {\LARGE \bf #1};
       \end{tikzpicture}
     \end{textblock}
     }
@@ -403,7 +403,7 @@
         \clip(0,0) rectangle (\TPHorizModule,.105\TPHorizModule);
         \ch@ngecolors{0}
         \draw[header style] (0,.0333\TPHorizModule) rectangle (\TPHorizModule,.105\TPHorizModule);
-        \node[title color,right] at (.05\TPHorizModule,.07\TPHorizModule) {\LARGE \bf #1};
+        \node[title color,right] at (.05\TPHorizModule,.065\TPHorizModule) {\LARGE \bf #1};
     \end{tikzpicture}
     \end{textblock}
     }
@@ -426,9 +426,8 @@
                                {%
                                     \node[scale=2]  at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\x}};
                                }%
-%                 \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink                     
                      \node[scale=2] at (\z\reclength,.05\TPHorizModule) {\textcolor{white}{\thechapter}}; %Write chapter number in the rectangle
-                     \node at (\z\reclength,.05\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
+                     \node at (\z\reclength,.05\TPHorizModule) {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}}; %Hidden hyperlink
                 }{%
                   \draw[small rectangle] (\y\reclength,.0714\TPHorizModule) rectangle (\x\reclength,0\TPHorizModule);
                   %When drawing a small rectangle, check whether it is an appendix or not and write the corresponding counter in the rectangle.
@@ -438,7 +437,7 @@
                                {%
                                     \node[scale=2]  at (\z\reclength,.04\TPHorizModule) {\textcolor{white}{\x}};
                                }%
-                \node at (\z\reclength,.036\TPHorizModule) {\hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink
+                \node at (\z\reclength,.036\TPHorizModule) {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}}; %Hidden hyperlink
                 }
             }
         \end{tikzpicture}
@@ -448,7 +447,6 @@
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Nexus page style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \fancypagestyle{plain}{\fancyhf{}}
-% \renewcommand\chaptermark[1]{bla\markboth{\textcolor{white}{#1}}{}}
 \@ifundefinedcolor{chapa}{%
     \fancypagestyle{nexus}{%
         \fancyfoot{\draw@emptyfooter}%
@@ -473,7 +471,7 @@
 }%
 {%
     \def\@makechapterhead#1{%
-        \hypertarget{chapter \thetotalchapters}{}%
+        \protect\hypertarget{chapter:\thetotalchapters}{}%
         \parindent 0pt%
         \draw@chapterheader{#1}%
         \draw@footer%
@@ -498,11 +496,12 @@
 
 \pagestyle{nexus}
 
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+
 %%%%%%%%%%%%%%%%% TOC
 
-
-
-\renewcommand\chaptermark[1]{\markboth{\textcolor{white}{#1}}{}}
 
 \renewcommand{\@pnumwidth}{3em}% To avoid a badbox for documents with more than 100 pages
 \contentsmargin{-1.5cm}%
@@ -551,9 +550,8 @@
 \ch@ngecolors{\thecharpitre}%
 \begin{tikzpicture}[remember picture, overlay]%
     \draw[toc rectangle] (-4.2,-.1) rectangle (-.8,.5);%
-    \node at (-2.5,0.2) {\hyperlink{chapter \thecharpitre}{\XeTeXLinkBox{\phantom{\rule{3.4cm}{.6cm}}}}}; %Hidden hyperlink    
-%     \hyperlink{chapter \thecharpitre}{\tikz\draw[toc rectangle] (-4.2,-.1) rectangle (-.8,.5);}
-    \pgftext[left,x=-3.5cm,y=0.2cm]{\color{white}\large\bfseries\sc\@chapapp\ %
+    \node at (-2.5,0.2) {\protect\hyperlink{chapter:\thecharpitre}{\XeTeXLinkBox{\phantom{\rule{3.4cm}{.6cm}}}}}; %Hidden hyperlink
+    \pgftext[left,x=-3.5cm,y=0.17cm]{\color{white}\large\bfseries\@chapapp\ %
     \thecontentslabel};%
 \end{tikzpicture}%
 \large\bfseries\color{\ch@p!80!black}}%
@@ -591,8 +589,5 @@
 \renewcommand{\tableofcontents}{%
 \chapter*{\contentsname}%
 \markboth{\contentsname}{}
-% \def\@leftmark{\contentsname}%
 \vspace{-30pt}%
 \@starttoc{toc}}
-
-% \hyperlink{chapter \x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}

@@ -1,0 +1,360 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{nexus-aquarelle}[2026/09/30 Pastel watercolor theme for nexus]
+% Load after environnements.tex and nexus.sty. The original packages stay intact.
+\RequirePackage[most]{tcolorbox}
+\usetikzlibrary{calc,decorations.pathmorphing}
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{fontspec}
+\RequirePackage{needspace}
+% Optional body heading color. Green is used in the visual reference;
+% the neutral option remains available for any chapter palette.
+\newif\ifAquarelleSectionsColorees
+\AquarelleSectionsColoreestrue
+\DeclareOption{sectionscolorees}{\AquarelleSectionsColoreestrue}
+\DeclareOption{sectionsneutres}{\AquarelleSectionsColoreesfalse}
+\ProcessOptions\relax
+\IfFileExists{/usr/share/fonts/opentype/ebgaramond/EBGaramond12-Regular.otf}{%
+  \setmainfont[
+    Path=/usr/share/fonts/opentype/ebgaramond/,
+    Scale=1.10,
+    UprightFont=EBGaramond12-Regular.otf,
+    ItalicFont=EBGaramond12-Italic.otf,
+    BoldFont=EBGaramond12-Regular.otf,
+    BoldFeatures={FakeBold=1.6},
+    BoldItalicFont=EBGaramond12-Italic.otf,
+    BoldItalicFeatures={FakeBold=1.6}]{EB Garamond}%
+}{\setmainfont{TeX Gyre Pagella}}
+\makeatletter
+\@ifpackageloaded{geometry}{\geometry{left=1.5cm,right=1.5cm}}{}
+
+\definecolor{aquarelleCorail}{HTML}{BB6A56}
+\definecolor{aquarelleBleu}{HTML}{779FAE}
+\definecolor{aquarelleSapin}{HTML}{416A64}
+\definecolor{aquarellePeche}{HTML}{B97660}
+\definecolor{aquarelleEncre}{HTML}{424140}
+\newcommand*\aquarelle@sectioncolor{\ifAquarelleSectionsColorees aquarelleSapin\else aquarelleEncre\fi}
+% Keep the chapter-to-color mapping used by nexus; soften its visible tabs.
+\definecolor{chapb}{HTML}{D39A62}
+\definecolor{chapc}{HTML}{D9C68A}
+\definecolor{chapd}{HTML}{98AD93}
+\definecolor{chape}{HTML}{83A7B6}
+\definecolor{chapf}{HTML}{AA9CB8}
+\definecolor{chapg}{HTML}{C27B66}
+\definecolor{chaph}{HTML}{D1A078}
+\definecolor{chapi}{HTML}{8BB6A3}
+\definecolor{chapj}{HTML}{829DBA}
+
+% The title image path follows the chapter color selected by nexus.
+% The other graphics are reused by every occurrence of a given block type.
+\newcommand*\AquarelleCorail{aquarelle/bandeau-\ch@p.png}
+\newcommand*\AquarelleBleu{aquarelle/bleu-fond.png}
+\newcommand*\AquarellePeche{aquarelle/peche-fond.png}
+\setlength{\reclength}{.0833\paperwidth}
+% The watercolor exceeds the page edges slightly to avoid white antialiased
+% strips. Header text, footer tabs and hyperlinks keep their nexus coordinates.
+\tikzset{
+  header style/.style={draw=none,fill=none,
+    path picture={\node[anchor=south west,inner sep=0] at
+      ([xshift=-2pt]path picture bounding box.south west)
+      {\includegraphics[trim=32bp 0 32bp 16bp,clip,width=\dimexpr\paperwidth+4pt\relax,height=.0717\paperwidth]{\AquarelleCorail}};}},
+  small rectangle/.style={fill=\ch@p,draw=aquarelleEncre!20,
+    line width=.25pt,rounded corners=2.5pt,fill opacity=.82},
+  big rectangle/.style={draw=aquarelleEncre!68,fill=white,
+    line width=.52pt,rounded corners=2pt,decorate,
+    decoration={random steps,segment length=4pt,amplitude=.72pt}},
+  rectangle for page numbering/.style={draw=\ch@p!85,
+    fill=none,line width=.46pt,line cap=round,line join=round},
+}
+
+
+% The footer is one continuous PNG for each active chapter.
+% Numerals and chapter links remain live TeX content.
+\newcommand*\aquarelle@footernumber[1]{%
+  \ifthenelse{\(\x>\totvalue{chapter}\)\and\(\totvalue{totalchapters}>\totvalue{chapter}\)}{%
+    \AlphAlph{\numexpr\x-\totvalue{chapter}}}{#1}}
+\newcommand*\aquarelle@footer[1]{%
+  \begin{textblock}{1}(0,0.927)%
+    \begin{tikzpicture}[x=1cm,y=1cm]%
+      \clip (-2pt,-2pt) rectangle (\dimexpr\TPHorizModule+2pt\relax,.119\TPHorizModule);%
+      \ifnum\value{totalchapters}>0\relax
+        \ch@ngecolors{\thetotalchapters}%
+        \edef\aquarelle@footerimage{aquarelle/pied-compose-\ch@p.png}%
+      \else
+        \def\aquarelle@footerimage{aquarelle/pied-compose-sommaire.png}%
+      \fi
+      \IfFileExists{\aquarelle@footerimage}{}{%
+        \def\aquarelle@footerimage{aquarelle/pied-compose-chapb.png}}%
+      \node[anchor=south west,inner sep=0] at (-2pt,.0105\paperheight)
+        {\includegraphics[width=\dimexpr\paperwidth+4pt\relax]{\aquarelle@footerimage}};%
+      \foreach[evaluate=\y using \x-1,evaluate=\z using \x-.5] \x in {1,...,\totvalue{totalchapters}} {%
+        \ch@ngecolors{\x}%
+        \ifthenelse{\equal{\thetotalchapters}{\x}}{%
+          \node[scale=2,text=white] at (\z\reclength,.0625\TPHorizModule)
+            {\aquarelle@footernumber{\x}};%
+          \node at (\z\reclength,.051\TPHorizModule)
+            {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{1.145\reclength}}}}};%
+        }{%
+          \node[scale=2,text=white] at (\z\reclength,.054\TPHorizModule)
+            {\aquarelle@footernumber{\x}};%
+          \node at (\z\reclength,.038\TPHorizModule)
+            {\protect\hyperlink{chapter:\x}{\XeTeXLinkBox{\phantom{\rule{\reclength}{.85\reclength}}}}};%
+        }%
+      }%
+      \ch@ngecolors{\thetotalchapters}% The loop leaves the last tab's color active.
+      \ifnum#1=1\relax
+        \path[fill=white,rounded corners=1.5pt]
+          (.93\TPHorizModule,.082\TPHorizModule)
+          rectangle (\TPHorizModule,.110\TPHorizModule);%
+        \draw[rectangle for page numbering]
+          (.93\TPHorizModule,.082\TPHorizModule)
+          .. controls (.9297\TPHorizModule,.092\TPHorizModule)
+                   and (.9304\TPHorizModule,.103\TPHorizModule)
+          .. (.93\TPHorizModule,.107\TPHorizModule)
+          .. controls (.9301\TPHorizModule,.109\TPHorizModule)
+                   and (.931\TPHorizModule,.110\TPHorizModule)
+          .. (.934\TPHorizModule,.110\TPHorizModule)
+          .. controls (.951\TPHorizModule,.1103\TPHorizModule)
+                   and (.975\TPHorizModule,.1097\TPHorizModule)
+          .. (.996\TPHorizModule,.110\TPHorizModule)
+          .. controls (.999\TPHorizModule,.110\TPHorizModule)
+                   and (\TPHorizModule,.109\TPHorizModule)
+          .. (\TPHorizModule,.107\TPHorizModule)
+          .. controls (1.0003\TPHorizModule,.102\TPHorizModule)
+                   and (.9996\TPHorizModule,.090\TPHorizModule)
+          .. (\TPHorizModule,.082\TPHorizModule);%
+        \node[text=aquarelleEncre!95] at (.965\TPHorizModule,.096\TPHorizModule) {\thepage};%
+      \fi
+    \end{tikzpicture}%
+  \end{textblock}%
+}
+\renewcommand*\draw@footer{\aquarelle@footer{1}}
+\renewcommand*\draw@chaptersfooter{\aquarelle@footer{0}}
+% nexus installs the full-page drawings in every fancyhdr field. Draw each
+% exactly once on continuation pages so translucent watercolor stays even.
+\fancypagestyle{nexus}{%
+  \fancyhf{}%
+  \fancyhead[L]{\draw@header{}}%
+  \fancyfoot[L]{\draw@footer}%
+}
+\pagestyle{nexus}% Activate the replacement also in stand-alone chapter previews.
+
+\newcommand*\aquarelle@underlay[1]{%
+  \node[anchor=center,inner sep=0] at (interior)
+    {\includegraphics[width=\tcb@innerwidth,height=\tcb@innerheight]{#1}};%
+}
+\newcommand*\aquarelle@titlewash{%
+  \aquarelle@underlay{aquarelle/bleu.png}%
+  \node[anchor=center,inner sep=0,opacity=.22] at (interior)
+    {\includegraphics[width=\tcb@innerwidth,height=\tcb@innerheight]
+      {aquarelle/bleu-v2.png}};%
+}
+\newcommand*\aquarelle@crayonframe{%
+  \draw[aquarelleEncre!75,line width=.48pt,opacity=.78,decorate,
+    decoration={random steps,segment length=2.6pt,amplitude=.38pt}]
+    (frame.south west) rectangle (frame.north east);%
+  \draw[aquarelleEncre!50,line width=.16pt,opacity=.42,decorate,
+    decoration={random steps,segment length=4pt,amplitude=.22pt}]
+    ([xshift=.18pt,yshift=-.13pt]frame.south west)
+    rectangle ([xshift=-.12pt,yshift=.17pt]frame.north east);%
+}
+\tcbset{aquarelle base/.style={enhanced jigsaw,breakable,sharp corners,
+  frame hidden,boxrule=0pt,colback=white,colbacklower=white,
+  before skip=5pt,after skip=5pt,grow sidewards by=.4cm,
+  top=5pt,bottom=5pt,right=7pt,left=10pt,
+  opacityback=0,opacitybacklower=0},
+  aquarelle boxed/.style={enhanced jigsaw,breakable,sharp corners,
+  colframe=aquarelleEncre!85,boxrule=0pt,colback=white,opacityback=0,
+  frame code={\aquarelle@crayonframe},
+  grow sidewards by=.4cm,
+  left=11pt,right=10pt,top=10pt,bottom=9pt,
+  before skip=9pt,after skip=9pt,
+  underlay={\aquarelle@underlay{\AquarelleBleu}},
+  fonttitle=\normalfont,coltitle=black,
+  attach boxed title to top left={xshift=8pt,yshift=-5pt},
+  boxed title style={enhanced,sharp corners,colframe=aquarelleEncre!85,
+    colback=white,opacityback=0,boxrule=0pt,
+    underlay={\aquarelle@titlewash},
+    frame code={\aquarelle@crayonframe},
+    left=4pt,right=4pt,top=1pt,bottom=1pt}}}
+\newcommand*\aquarelle@boxedstart[2]{%
+  \refstepcounter{definition}%
+  \begin{tcolorbox}[aquarelle boxed,
+    title={#1 \thedefinition\ifstrempty{#2}{}{ (#2)}}]%
+}
+
+
+% Replace the old solid margin rule of the breakable xeboiboites frames.
+% The edge is already painted into the chosen background PNG.
+\newdimen\aquarelle@frameminx
+\newdimen\aquarelle@framemaxx
+\newdimen\aquarelle@frameminy
+\newdimen\aquarelle@framemaxy
+\newcommand*\aquarelle@spanframe[1]{%
+  \noindent\tikz{%
+    \node[inner xsep=0pt,inner ysep=0pt] (A) {#1};%
+    \pgfextractx{\aquarelle@frameminx}{\pgfpointanchor{A}{south west}}%
+    \pgfextractx{\aquarelle@framemaxx}{\pgfpointanchor{A}{north east}}%
+    \pgfextracty{\aquarelle@frameminy}{\pgfpointanchor{A}{south west}}%
+    \pgfextracty{\aquarelle@framemaxy}{\pgfpointanchor{A}{north east}}%
+    \begin{pgfonlayer}{background}%
+      \node[overlay,anchor=south west,inner sep=0] at ($(A.south west)+(-.25cm,0)$)
+        {\includegraphics[width=.12cm,
+          height=\dimexpr\aquarelle@framemaxy-\aquarelle@frameminy\relax]
+          {aquarelle/trait-crayon.png}};%
+    \end{pgfonlayer}%
+  }}
+\let\spanframeb\aquarelle@spanframe
+\let\spanframebtop\aquarelle@spanframe
+\let\spanframebbottom\aquarelle@spanframe
+\let\spanframebmiddle\aquarelle@spanframe
+
+\AtBeginDocument{%
+  % Replace only the icons of the illustrated xeboiboites environments.
+  \@ifundefined{attention}{}{\expandafter\patchcmd\csname\string\attention\endcsname{dessins/panneau}{aquarelle/icone-attention.png}{}{\PackageWarning{nexus-aquarelle}{Cannot patch attention icon}}}%
+  \@ifundefined{methode}{}{\expandafter\patchcmd\csname\string\methode\endcsname{dessins/bulb}{aquarelle/icone-methode.png}{}{\PackageWarning{nexus-aquarelle}{Cannot patch methode icon}}}%
+  \@ifundefined{exercicesup}{}{\expandafter\patchcmd\csname\string\exercicesup\endcsname{dessins/smartowl}{aquarelle/icone-exercicesup.png}{}{\PackageWarning{nexus-aquarelle}{Cannot patch exercicesup icon}}}%
+  \@ifundefined{beamer}{}{\expandafter\patchcmd\csname\string\beamer\endcsname{dessins/smartowl}{aquarelle/icone-exercicesup.png}{}{\PackageWarning{nexus-aquarelle}{Cannot patch beamer icon}}}%
+  \@ifundefined{clickers}{}{\expandafter\patchcmd\csname\string\clickers\endcsname{dessins/owl}{aquarelle/icone-clickers.png}{}{\PackageWarning{nexus-aquarelle}{Cannot patch clickers icon}}}%
+  \@ifundefined{coeur}{}{\renewcommand{\coeur}[1][0em]{\noindent\marginnote{\includegraphics[width=1.3cm]{aquarelle/icone-coeur.png}}[#1]}}%
+  % A painted chapter swatch, reused from the watercolor navigation assets.
+  \providecommand*\aquarelle@tocswatch{%
+    \tikz[baseline=-.45ex]{%
+      \node[inner sep=0] (wash)
+        {\includegraphics[width=4.3pc,height=1.7em]
+          {aquarelle/onglet-cible-\ch@p.png}};%
+      \node[inner sep=0,text=white,font=\small\bfseries] at (wash.center)
+        {Chapitre \thecontentslabel};%
+    }%
+  }%
+  % A quiet table of contents with stronger watercolor chapter accents.
+  \@ifundefined{titlecontents}{}{%
+    \contentsmargin{0pt}%
+    \titlecontents{chapter}[4.5pc]
+      {\Needspace{10\baselineskip}\addvspace{11pt}\stepcounter{charpitre}\ch@ngecolors{\thecharpitre}%
+        \large\bfseries\color{\ch@p!83!black}}
+      {\contentslabel[\aquarelle@tocswatch]{4.5pc}}
+      {}
+      {\;\color{\ch@p!75}\titlerule\;{\normalfont\color{\ch@p!85!black}\thecontentspage}}
+      [\addvspace{2pt}]%
+    \titlecontents{section}[1.1cm]
+      {\addvspace{3pt}\normalfont\color{aquarelleEncre}}
+      {\contentslabel[{\color{aquarelleSapin}\thecontentslabel}]{2.5pc}}
+      {}
+      {\hfill{\small\color{aquarelleEncre!70}\thecontentspage}}
+      [\addvspace{2pt}]%
+    \titlecontents*{subsection}[2cm]
+      {\normalfont\small\itshape\color{aquarelleEncre!72}}
+      {}{}{}
+      [\penalty0\enspace\textcolor{aquarelleCorail!55}{\textbullet}\enspace][]%
+  }%
+  \@ifundefined{objectifs}{}{%
+    % The original objectives use the global chapter palette. Restrict the
+    % coral choice to their own group, so the footer keeps its nine colors.
+    \renewcommand*\objectifs@setcolor{\ch@ngecolors{\thetotalchapters}}%
+    \renewcommand*\objectifs@puce{%
+      \tikz[x=1em,y=1em,baseline=-.55ex]{%
+        \fill[\ch@p!85,opacity=.84,decorate,
+          decoration={random steps,segment length=1.9pt,amplitude=.13pt}]
+          (0,0) circle[radius=.62];%
+        \fill[\ch@p!60,opacity=.2] (.06,-.03) circle[radius=.55];%
+        \draw[white,line width=.8pt,line cap=round,line join=round]
+          (-.28,.02) -- (-.05,-.22) -- (.32,.28);%
+      }}%
+    \patchcmd{\objectifs}
+      {\draw[\ch@p,line width=.6pt]}
+      {\draw[\ch@p!88,line width=.65pt,decorate,
+        decoration={random steps,segment length=3pt,amplitude=.18pt}]}
+      {}{\PackageWarning{nexus-aquarelle}{Cannot restyle objectives rule 1}}%
+    \patchcmd{\objectifs}
+      {\draw[\ch@p,line width=.6pt]}
+      {\draw[\ch@p!88,line width=.65pt,decorate,
+        decoration={random steps,segment length=3pt,amplitude=.18pt}]}
+      {}{\PackageWarning{nexus-aquarelle}{Cannot restyle objectives rule 2}}%
+    \setlength{\objectifs@sepHaut}{.65em}%
+    \patchcmd{\endobjectifs}{\medskip}{\vspace{-7pt}}{}{}%
+    \let\aquarelle@oldobjectifs\objectifs
+    \let\aquarelle@oldendobjectifs\endobjectifs
+    \RenewDocumentEnvironment{objectifs}{}{%
+      \begin{list}{}{\setlength{\leftmargin}{1cm}%
+        \setlength{\rightmargin}{1cm}%
+        \setlength{\topsep}{0pt}%
+        \setlength{\partopsep}{0pt}%
+        \setlength{\itemsep}{0pt}%
+        \setlength{\parsep}{0pt}}%
+      \item\relax\aquarelle@oldobjectifs
+    }{\aquarelle@oldendobjectifs\end{list}}%
+  }%
+  \renewcommand\section{\@startsection{section}{1}{\z@}{-3.5ex \@plus -1ex \@minus -.2ex}{2.3ex \@plus .2ex}{\normalfont\LARGE\bfseries\color{\aquarelle@sectioncolor}}}%
+  \renewcommand\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\Large\bfseries\color{\aquarelle@sectioncolor}}}%
+  \renewcommand*\@seccntformat[1]{{\color{\aquarelle@sectioncolor}\csname the#1\endcsname}\quad}%
+  \@ifundefined{definition}{}{%
+    \RenewDocumentEnvironment{definition}{O{}}{%
+      \refstepcounter{definition}%
+      \begin{tcolorbox}[aquarelle base,
+        underlay={\aquarelle@underlay{\AquarelleBleu}}]%
+      {\bfseries\color{aquarelleEncre}Définition \thedefinition
+        \ifstrempty{#1}{}{ (#1)}.}\nobreak\ \ignorespaces
+    }{\end{tcolorbox}}%
+  }%
+  \@ifundefined{illustration}{}{%
+    \RenewDocumentEnvironment{illustration}{}{%
+      \refstepcounter{definition}%
+      \begin{tcolorbox}[aquarelle base,
+        underlay={\aquarelle@underlay{\AquarellePeche}},
+        left=10pt,right=8pt,top=6pt,bottom=5pt]%
+      {\bfseries\color{aquarellePeche}Illustration \thedefinition.}\nobreak\ \ignorespaces
+    }{\end{tcolorbox}}%
+  }%
+  \@ifundefined{exercice}{}{%
+    \RenewDocumentEnvironment{exercice}{O{}}{%
+      \refstepcounter{numExo}%
+      \begin{tcolorbox}[aquarelle base,
+        left=8pt,right=6pt,top=3pt,bottom=3pt,
+        before skip=3pt,after skip=3pt]%
+      \tcbox[on line,boxrule=.45pt,colframe=aquarelleBleu,
+        colback=aquarelleBleu!28,arc=2pt,left=3pt,right=3pt,
+        top=1pt,bottom=1pt]{\bfseries\arabic{numExo}}\enspace
+      \ifstrempty{#1}{}{\textcolor{aquarellePeche}{\textit{#1.}}\enspace}%
+      \ignorespaces
+    }{\end{tcolorbox}}%
+  }%
+  % The theorem-style boiboites keep their shared definition counter and labels.
+  \@ifundefined{definitionb}{}{%
+    \RenewDocumentEnvironment{definitionb}{O{}}{%
+      \aquarelle@boxedstart{Définition}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{proposition}{}{%
+    \RenewDocumentEnvironment{proposition}{O{}}{%
+      \aquarelle@boxedstart{Proposition}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{theoreme}{}{%
+    \RenewDocumentEnvironment{theoreme}{O{}}{%
+      \aquarelle@boxedstart{Théorème}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{corollairei}{}{%
+    \RenewDocumentEnvironment{corollairei}{O{}}{%
+      \aquarelle@boxedstart{Corollaire}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{proprietei}{}{%
+    \RenewDocumentEnvironment{proprietei}{O{}}{%
+      \aquarelle@boxedstart{Propriété}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{proprietesi}{}{%
+    \RenewDocumentEnvironment{proprietesi}{O{}}{%
+      \aquarelle@boxedstart{Propriétés}{#1}}{\end{tcolorbox}}%
+  }%
+  \@ifundefined{definitions}{}{%
+    \RenewDocumentEnvironment{definitions}{O{}}{%
+      \refstepcounter{definition}%
+      \begin{tcolorbox}[aquarelle base,
+        underlay={\aquarelle@underlay{\AquarelleBleu}}]%
+      {\bfseries\color{aquarelleEncre}Définitions \thedefinition
+        \ifstrempty{#1}{}{ (#1)}.}\nobreak\ \ignorespaces
+    }{\end{tcolorbox}}%
+  }%
+
+}
+\makeatother
